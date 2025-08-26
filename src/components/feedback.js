@@ -8,9 +8,15 @@ export default function FeedbackForm() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Предотвращаем повторную отправку если уже отправляем
+    if (submitting) return;
+
+    setSubmitting(true);
     setStatus("Sending...");
 
     try {
@@ -25,6 +31,8 @@ export default function FeedbackForm() {
     } catch (error) {
       console.error("Failed to send feedback", error);
       setStatus(" '_' Failed to send. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 

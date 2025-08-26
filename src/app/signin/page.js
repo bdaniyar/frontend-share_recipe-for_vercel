@@ -52,6 +52,9 @@ export default function SignInPage() {
   const [showResetPass1, setShowResetPass1] = useState(false);
   const [showResetPass2, setShowResetPass2] = useState(false);
 
+  const [resetRequestLoading, setResetRequestLoading] = useState(false);
+  const [resetConfirmLoading, setResetConfirmLoading] = useState(false);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -61,6 +64,7 @@ export default function SignInPage() {
 
   const handleSignin = async (e) => {
     e.preventDefault();
+    if (loading) return; // prevent double submit
     setLoading(true);
     setError("");
     setSuccessMsg("");
@@ -125,10 +129,13 @@ export default function SignInPage() {
   };
 
   const requestReset = async () => {
+    if (resetRequestLoading) return; // guard
+    setResetRequestLoading(true);
     setResetErr("");
     setResetMsg("");
     if (!resetEmail) {
       setResetErr("Enter your email first");
+      setResetRequestLoading(false);
       return;
     }
     try {
@@ -145,14 +152,19 @@ export default function SignInPage() {
       setResetStep(2);
     } catch (e) {
       setResetErr(e.message || "Failed to send code");
+    } finally {
+      setResetRequestLoading(false);
     }
   };
 
   const confirmReset = async () => {
+    if (resetConfirmLoading) return; // guard
+    setResetConfirmLoading(true);
     setResetErr("");
     setResetMsg("");
     if (!resetCode || !resetPass1 || !resetPass2) {
       setResetErr("Fill all fields");
+      setResetConfirmLoading(false);
       return;
     }
     try {
@@ -171,6 +183,8 @@ export default function SignInPage() {
       setFormData((f) => ({ ...f, email: resetEmail, password: "" }));
     } catch (e) {
       setResetErr(e.message || "Failed to reset password");
+    } finally {
+      setResetConfirmLoading(false);
     }
   };
 
@@ -261,7 +275,7 @@ export default function SignInPage() {
                 <>
                   <Label htmlFor="resetEmail">Email</Label>
                   <Input id="resetEmail" type="email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} placeholder="your@example.com" />
-                  <Button className="bg-yellow-500 text-black hover:bg-yellow-600" onClick={requestReset}>Send code</Button>
+                  <Button className="bg-yellow-500 text-black hover:bg-yellow-600" onClick={requestReset} disabled={resetRequestLoading}>{resetRequestLoading ? "Sending..." : "Send code"}</Button>
                 </>
               ) : (
                 <>
@@ -299,7 +313,7 @@ export default function SignInPage() {
                   </div>
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setResetStep(1)}>Back</Button>
-                    <Button className="bg-yellow-500 text-black hover:bg-yellow-600" onClick={confirmReset}>Reset password</Button>
+                    <Button className="bg-yellow-500 text-black hover:bg-yellow-600" onClick={confirmReset} disabled={resetConfirmLoading}>{resetConfirmLoading ? "Resetting..." : "Reset password"}</Button>
                   </div>
                 </>
               )}

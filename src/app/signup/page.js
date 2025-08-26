@@ -143,6 +143,7 @@ export default function SignUpPage() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (loading) return; // prevent double submit
     setLoading(true);
     setError("");
     setSuccessMsg("");

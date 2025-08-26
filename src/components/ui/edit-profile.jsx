@@ -33,6 +33,7 @@ export default function EditProfile() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (loading) return; // prevent double submit
         setLoading(true);
         setError("");
         setSuccess("");

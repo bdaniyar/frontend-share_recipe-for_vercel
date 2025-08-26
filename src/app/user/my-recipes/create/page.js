@@ -69,6 +69,7 @@ export default function MyRecipeCreate({ initialData = {} }) {
   const [steps, setSteps] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const [preview, setPreview] = useState(initialData.image || null);
 
@@ -204,6 +205,12 @@ export default function MyRecipeCreate({ initialData = {} }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Предотвращаем повторную отправку если уже отправляем
+    if (submitting) return;
+
+    setSubmitting(true);
+
     try {
       // Backend currently expects: title, description, instructions (JSON)
       const instructions = (steps || [])
@@ -254,6 +261,8 @@ export default function MyRecipeCreate({ initialData = {} }) {
       } else {
         console.error("Failed to save recipe", err);
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -494,8 +503,12 @@ export default function MyRecipeCreate({ initialData = {} }) {
               <Button type="button" variant="outline" onClick={handleClear}>
                 Clear
               </Button>
-              <Button type="submit" className="bg-yellow-500 text-black flex-1 hover:bg-yellow-600">
-                {initialData.id ? "Update Recipe" : "Create Recipe"}
+              <Button
+                type="submit"
+                className="bg-yellow-500 text-black flex-1 hover:bg-yellow-600"
+                disabled={submitting}
+              >
+                {submitting ? "Создаётся..." : (initialData.id ? "Update Recipe" : "Create Recipe")}
               </Button>
             </div>
           </CardContent>
