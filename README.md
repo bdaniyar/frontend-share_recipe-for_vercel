@@ -2,7 +2,9 @@
 
 Modern Next.js 15 (App Router) frontend for the Share Recipe platform. Provides the user interface for browsing, searching, creating and managing recipes, authenticating (email code + Google OAuth), leaving feedback, and interacting with personal kitchen features.
 
-![App Screenshot](src/assets/Снимок экрана 2025-08-29 в 21.25.57.png)
+![App Screenshot](public/screenshot.png)
+
+<!-- Fallback: if rendering issues on GitHub, ensure file committed at public/screenshot.png -->
 
 ## Related Repositories
 - Backend (FastAPI): https://github.com/bdaniyar/backend-share_recipe (see provided backend README sample)
